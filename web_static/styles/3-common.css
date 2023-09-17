@@ -1,0 +1,11 @@
+html {
+    height: 100%;
+}
+body {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    color:  #484848;
+    font: 14px Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    min-height: 100%;
+}
