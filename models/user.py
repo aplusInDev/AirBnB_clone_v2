@@ -10,7 +10,7 @@ import os
 env_value = os.getenv('HBNB_TYPE_STORAGE')
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """A class that inherits from BaseModel and represents a user"""
 
     if env_value == 'db':
