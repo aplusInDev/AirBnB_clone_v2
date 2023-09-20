@@ -1,69 +1,62 @@
 #!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
+"""This module defines a class called FileStorage that represents the base
+model to handle storage file"""
+
 import json
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class FileStorage:
-    """This class manages storage of hbnb models in JSON format"""
+    """A class that handles the file storage of objects"""
 
+    # A private class attribute that represents the path to the JSON file
     __file_path = "file.json"
+    # A private class attribute that stores all objects by <class name>.id
     __objects = {}
 
-    def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
-        if not cls:
-            return FileStorage.__objects
-        cls_objs = {}
-        for key, obj in FileStorage.__objects.items():
-            if isinstance(obj, cls):
-                cls_objs[key] = obj
-        return cls_objs
+    def all(self, cls=None) -> dict:
+        """Returns the dictionary __objects"""
+        if cls:
+            class_objects = {}
+            for key, value in self.__objects.items():
+                if isinstance(value, cls):
+                    class_objects[key] = value
+            return class_objects
+        return self.__objects
 
-    def new(self, obj):
-        """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()["__class__"] + "." + obj.id: obj})
-
-    def save(self):
-        """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, "w") as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
-
-    def reload(self):
-        """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
-        classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "Place": Place,
-            "State": State,
-            "City": City,
-            "Amenity": Amenity,
-            "Review": Review,
-        }
-        try:
-            temp = {}
-            with open(FileStorage.__file_path, "r") as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val["__class__"]](**val)
-        except FileNotFoundError:
-            pass
-
-    def delete(self, obj=None):
-        """Delete obj from __objects"""
+    def delete(self, obj=None) -> None:
+        """Delete obj from __objects if it's inside"""
         if obj:
             for key, value in FileStorage.__objects.items():
-                if obj == value:
+                if value == obj:
                     del FileStorage.__objects[key]
                     break
+
+    def new(self, obj) -> None:
+        """Sets in __objects the obj with key <obj class name>.id"""
+        key: str = "{}.{}".format(type(obj).__name__, obj.id)
+        self.__objects[key] = obj
+
+    def save(self) -> None:
+        """Serializes __objects to the JSON file (path: __file_path)"""
+        save_dict: dict = {}
+        for key, value in self.__objects.items():
+            save_dict[key] = value.to_dict()
+        with open(self.__file_path, "w", encoding="utf-8") as storage:
+            json.dump(save_dict, storage)
+
+    def reload(self) -> None:
+        try:
+            with open(self.__file_path, encoding="utf-8") as storage:
+                data: dict = json.load(storage)
+
+            for key, value in data.items():
+                self.new(eval(key.split(".")[0])(**value))
+        except FileNotFoundError:
+            pass

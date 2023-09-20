@@ -1,33 +1,33 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""This module defines a class called State
+that inherits from BaseModel and represents a state"""
+
 from models.base_model import BaseModel, Base
-
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-
 import os
+from models.city import City
+from models import storage
+
 
 env_value = os.environ.get("HBNB_TYPE_STORAGE")
 
 
 class State(BaseModel, Base):
-    """State class"""
+    """A class that inherits from BaseModel and represents a state"""
 
-    __tablename__ = "states"
     if env_value == "db":
+        __tablename__ = "states"
         name = Column(String(128), nullable=False)
-        cities = relationship("City", backref="state")
+        cities = relationship("City", backref="state", cascade="all, delete")
     else:
-        name = ""
+        name: str = ""
 
         @property
         def cities(self):
-            from models.__init__ import storage
-            from models.city import City
-
-            obj_list = []
-            strg = storage.all(City)
-            for value in strg:
-                if self.id == value.state_id:
-                    obj_list.append(value)
-            return obj_list
+            """Getter attribute in case of file storage"""
+            cities_list = []
+            for city in storage.all(City).values():
+                if city.state_id == self.id:
+                    cities_list.append(city)
+            return cities_list

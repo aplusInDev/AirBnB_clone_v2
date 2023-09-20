@@ -1,17 +1,20 @@
 #!/usr/bin/python3
-"""This module instantiates an object of class FileStorage"""
+"""init file for modules package that create an instance of FileStorage class
+and call the reload method to deserialize the JSON file to objects"""
+
 
 import os
 
-variable_name = "HBNB_TYPE_STORAGE"
-env_value = os.environ.get(variable_name)
+
+env_value = os.environ.get("HBNB_TYPE_STORAGE")
+
 
 if env_value == "db":
     from models.engine.db_storage import DBStorage
 
-    storage = DBStorage()
+    storage: DBStorage = DBStorage()
 else:
     from models.engine.file_storage import FileStorage
 
-    storage = FileStorage()
+    storage: FileStorage = FileStorage()
 storage.reload()
