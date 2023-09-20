@@ -33,9 +33,10 @@ class FileStorage:
     def delete(self, obj=None) -> None:
         """Delete obj from __objects if it's inside"""
         if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            if key in self.__objects:
-                del self.__objects[key]
+            for key, value in FileStorage.__objects.items():
+                if value == obj:
+                    del FileStorage.__objects[key]
+                    break
 
     def new(self, obj) -> None:
         """Sets in __objects the obj with key <obj class name>.id"""
