@@ -1,14 +1,16 @@
-#!/usr/bin/env python3
-"""This module defines a class called User
-that inherits from BaseModel and represents a user"""
+#!/usr/bin/python3
+"""Define a class User"""
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
-from models.base_model import BaseModel
 
+class User(BaseModel, Base):
+    """User class"""
+    __tablename__ = 'users'
 
-class User(BaseModel):
-    """A class that inherits from BaseModel and represents a user"""
-
-    email: str = ""
-    password: str = ""
-    first_name: str = ""
-    last_name: str = ""
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128))
+    last_name = Column(String(128))
+    reviews = relationship('Review', backref='user', cascade='delete')

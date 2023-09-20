@@ -8,8 +8,8 @@ import models
 from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
 
+Base = declarative_base()
 
 class BaseModel():
     """This class defines the attributes and methods for
