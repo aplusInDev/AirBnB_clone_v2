@@ -6,6 +6,8 @@ from models.base_model import BaseModel
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
+
 
 class Place(BaseModel, Base):
     """ A place to stay """
@@ -21,7 +23,7 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     reviews = relationship("Review", backref='place', cascade="all, delete")
-    amenities = relationship("Amenity", secondary=place_amenity,
+    amenities = relationship("Amenity", secondary='place_amenity',
                              viewonly=False)
 
     @property
