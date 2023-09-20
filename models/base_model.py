@@ -5,7 +5,10 @@ model for all other classes in the project."""
 import uuid
 from datetime import datetime
 import models
+from sqlalchemy.ext.declarative import declarative_base
 
+
+Base = declarative_base()
 
 class BaseModel():
     """This class defines the attributes and methods for

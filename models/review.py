@@ -1,13 +1,12 @@
-#!/usr/bin/env python3
-"""This module defines a class called Review
-that inherits from BaseModel and represents a review"""
+#!/usr/bin/python3
+"""Review of the HBNB Project Module: """
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
-from models.base_model import BaseModel
 
-
-class Review(BaseModel):
-    """A class that inherits from BaseModel and represents a review"""
-
-    place_id: str = ""
-    user_id: str = ""
-    text: str = ""
+class Review(BaseModel, Base):
+    """ Review class """
+    __tablename__ = "reviews"
+    place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    text = Column(String(1024), nullable=False)
