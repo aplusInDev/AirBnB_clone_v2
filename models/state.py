@@ -13,7 +13,7 @@ from models import storage
 env_value = os.environ.get("HBNB_TYPE_STORAGE")
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """A class that inherits from BaseModel and represents a state"""
 
     if env_value == "db":
