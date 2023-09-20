@@ -15,7 +15,7 @@ from models.review import Review
 model to handle storage file"""
 
 
-class DBStorage:
+class DBStorage():
     """A class that handles the file storage of objects"""
     __engine = None
     __session = None
