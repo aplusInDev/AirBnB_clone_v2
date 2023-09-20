@@ -51,12 +51,27 @@ class HBNBCommand(cmd.Cmd):
         '''Create commant to make new instance of giving class'''
         if not arg:
             print("** class name missing **")
-        elif arg not in HBNBCommand.class_dict:
+            return
+        line = arg.split(" ")
+        class_name = arg.split(" ")[0]
+        if class_name not in HBNBCommand.class_dict:
             print("** class doesn't exist **")
-        else:
-            my_model = HBNBCommand.class_dict[arg]()
-            storage.save()
-            print(my_model.id)
+            return
+        new_instance = HBNBCommand.class_dict[class_name]()
+        if len(line) > 1:
+            params = line[1:]
+            for param in params:
+                key = param.split("=")[0]
+                value = param.split("=")[1].replace("_", " ")
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                try:
+                    value = eval(value)
+                except:
+                    pass
+                setattr(new_instance, key, value)
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, line):
         '''Command prints the string representation of an instance based
