@@ -128,7 +128,6 @@ class HBNBCommand(cmd.Cmd):
         else:
             for key, value in storage.all().items():
                 all_list.append(str(value))
-                pass
         print(all_list)
 
     def do_update(self, line, **kwargs):
