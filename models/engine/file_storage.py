@@ -23,10 +23,13 @@ class FileStorage:
     def all(self, cls=None) -> dict:
         """Returns the dictionary __objects"""
         if cls:
-            return {key: value for key, value in self.__objects.items()
-                    if isinstance(value, cls)}
+            class_objects = {}
+            for key, value in self.__objects.items():
+                if isinstance(value, cls):
+                    class_objects[key] = value
+            return class_objects
         return self.__objects
-    
+
     def delete(self, obj=None) -> None:
         """Delete obj from __objects if it's inside"""
         if obj:
