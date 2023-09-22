@@ -13,8 +13,8 @@ env_value = os.getenv('HBNB_TYPE_STORAGE')
 class User(BaseModel, Base):
     """A class that inherits from BaseModel and represents a user"""
 
+    __tablename__ = "users"
     if env_value == 'db':
-        __tablename__ = "users"
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)

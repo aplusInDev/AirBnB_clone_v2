@@ -6,9 +6,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 import os
-from models.review import Review
-from models import storage
-from models.amenity import Amenity
+
 
 env_value = os.getenv('HBNB_TYPE_STORAGE')
 place_amenity = Table('place_amenity', Base.metadata,
@@ -25,8 +23,8 @@ place_amenity = Table('place_amenity', Base.metadata,
 class Place(BaseModel, Base):
     """A class that inherits from BaseModel and represents a place"""
 
+    __tablename__ = "places"
     if env_value == 'db':
-        __tablename__ = "places"
         city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
         user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
         name = Column(String(128), nullable=False)
@@ -56,6 +54,8 @@ class Place(BaseModel, Base):
 
         def reviews(self):
             """Getter attribute in case of file storage"""
+            from models import storage
+            from models.review import Review
             reviews_list = []
             for review in storage.all(Review).values():
                 if review.place_id == self.id:
@@ -64,6 +64,8 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
+            from models import storage
+            from models.amenity import Amenity
             amenities_list = []
             for value in storage.all(Amenity).values():
                 if value.id in self.amenity_ids:
@@ -72,5 +74,6 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, obj):
+            from models.amenity import Amenity
             if type(obj) == Amenity:
                 self.amenity_ids.append(obj.id)

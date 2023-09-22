@@ -15,8 +15,8 @@ env_value = os.environ.get("HBNB_TYPE_STORAGE")
 class Amenity(BaseModel):
     """A class that inherits from BaseModel and represents an amenity"""
 
+    __tablename__ = "amenities"
     if env_value == "db":
-        __tablename__ = "amenities"
         name = Column(String(128), nullable=False)
         place_amenities = relationship("Place", secondary=place_amenity)
     else:
