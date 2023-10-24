@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ This module start flask app """
 from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
