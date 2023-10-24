@@ -60,3 +60,7 @@ class FileStorage:
                 self.new(eval(key.split(".")[0])(**value))
         except FileNotFoundError:
             pass
+
+    def close(self):
+        """Method for deserializing the JSON file to objects"""
+        self.reload()
