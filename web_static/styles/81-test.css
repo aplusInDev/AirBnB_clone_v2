@@ -1,21 +1,7 @@
-body {
-    margin: 0;
-    padding: 0;
-}
 .places {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-}
-@media (max-width: 768px) {
-    .places {
-        width: 90%;
-    }
-}
-@media (max-width: 992px) {
-    .places {
-        width: 90%;
-    }
 }
 .places > h1 {
     width: 100%;
@@ -82,60 +68,6 @@ body {
     background-image: url(../images/icon_bath.png);
 }
 .places .user,
-.places .description,
-.places .amenities,
-.places .reviews {
+.places .description {
     grid-column: 1/-1;
-}
-article > .reviews,
-article > .amenities {
-    margin-top: 40px;
-}
-article > .amenities {
-    padding-left: 0;
-    width: 100%;
-}
-article > .reviews > h2,
-article > .amenities > h2 {
-    font-size: 16px;
-    border-bottom: #DDDDDD solid 1px;
-    display: flex;
-    justify-content: flex-start;
-    line-height: normal;
-}
-.reviews > ul,
-.amenities > ul {
-    padding-left: 0;
-}
-.amenities > ul {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-}
-.amenities ul li {
-    aspect-ratio: 10/1;
-    background-repeat: no-repeat;
-}
-.amenities p {
-    line-height: normal;
-    text-align: center;
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 60px;
-    padding-top: 5px;
-}
-article .amenities ul > :first-child {
-    background-image: url("../images/icon_wifi.png");
-}
-article .amenities ul > :nth-child(2) {
-    background-image: url("../images/icon_tv.png");
-}
-article .amenities ul > :nth-child(3) {
-    background-image: url("../images/icon_pets.png");
-}
-article .amenities ul > :nth-child(4) {
-    background-image: url("../images/icon_kitchen.png");
-}
-.reviews p {
-    font-size: 12px;
 }
