@@ -6,9 +6,10 @@ using the function do_deploy."""
 from fabric.api import *
 from os import path
 
-
-env.hosts = ['ubntu@54.146.86.128',
-             'ubntu@100.26.152.40']
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/id_rsa'
+env.hosts = ['ubuntu@54.146.86.128',
+             'ubuntu@100.26.152.40']
 
 def do_deploy(archive_path):
     """distributes an archive to your web servers,
@@ -22,11 +23,9 @@ def do_deploy(archive_path):
         path_no_ext = "/data/web_static/releases/" + file_name_no_ext
         run("mkdir -p {}".format(path_no_ext))
         run("tar -xzf /tmp/{} -C {}".format(file_name, path_no_ext))
-        run("rm /tmp/{}".format(file_name))
-        run("mv {}/web_static/* {}".format(path_no_ext, path_no_ext))
-        run("rm -rf {}/web_static".format(path_no_ext))
+        run("rm -r /tmp/{}".format(file_name))
         run("rm -rf /data/web_static/current")
-        run("ln -s {} /data/web_static/current".format(path_no_ext))
+        run("ln -sf {} /data/web_static/current".format(path_no_ext))
         return True
     except:
         return False
