@@ -1,31 +1,35 @@
 #!/usr/bin/python3
+""" module doc
+"""
+from fabric.api import task, local, env, put, run
+import os
 
-"""Fabric script that distributes an archive to your web servers,
-using the function do_deploy."""
+env.hosts = ['54.146.86.128',
+             '100.26.152.40']
 
-from fabric.api import *
-from os import path
-
-env.user = 'ubuntu'
-env.key_filename = '~/.ssh/id_rsa'
-env.hosts = ['ubuntu@54.146.86.128',
-             'ubuntu@100.26.152.40']
 
 def do_deploy(archive_path):
-    """distributes an archive to your web servers,
-    using the function do_deploy."""
-    if not path.exists(archive_path):
-        return False
+    """ method doc
+        fab -f 2-do_deploy_web_static.py do_deploy:
+        archive_path=versions/web_static_20231004201306.tgz
+        -i ~/.ssh/id_rsa -u ubuntu
+    """
     try:
+        if not os.path.exists(archive_path):
+            return False
+        fn_with_ext = os.path.basename(archive_path)
+        fn_no_ext, ext = os.path.splitext(fn_with_ext)
+        dpath = "/data/web_static/releases/"
         put(archive_path, "/tmp/")
-        file_name = archive_path.split("/")[-1]
-        file_name_no_ext = file_name.split(".")[0]
-        path_no_ext = "/data/web_static/releases/" + file_name_no_ext
-        run("mkdir -p {}".format(path_no_ext))
-        run("tar -xzf /tmp/{} -C {}".format(file_name, path_no_ext))
-        run("rm -r /tmp/{}".format(file_name))
+        run("rm -rf {}{}/".format(dpath, fn_no_ext))
+        run("mkdir -p {}{}/".format(dpath, fn_no_ext))
+        run("tar -xzf /tmp/{} -C {}{}/".format(fn_with_ext, dpath, fn_no_ext))
+        run("rm /tmp/{}".format(fn_with_ext))
+        run("mv {0}{1}/web_static/* {0}{1}/".format(dpath, fn_no_ext))
+        run("rm -rf {}{}/web_static".format(dpath, fn_no_ext))
         run("rm -rf /data/web_static/current")
-        run("ln -sf {} /data/web_static/current".format(path_no_ext))
+        run("ln -s {}{}/ /data/web_static/current".format(dpath, fn_no_ext))
+        print("New version deployed!")
         return True
-    except:
+    except Exception:
         return False
