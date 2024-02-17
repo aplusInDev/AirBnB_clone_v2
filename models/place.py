@@ -9,15 +9,15 @@ import os
 
 
 env_value = os.getenv('HBNB_TYPE_STORAGE')
-place_amenity = Table('place_amenity', Base.metadata,
-                      Column('place_id', String(60),
-                             ForeignKey('places.id'),
-                             primary_key=True,
-                             nullable=False),
-                      Column('amenity_id', String(60),
-                             ForeignKey('amenities.id'),
-                             primary_key=True,
-                             nullable=False))
+# place_amenity = Table('place_amenity', Base.metadata,
+#                       Column('place_id', String(60),
+#                              ForeignKey('places.id'),
+#                              primary_key=True,
+#                              nullable=False),
+#                       Column('amenity_id', String(60),
+#                              ForeignKey('amenities.id'),
+#                              primary_key=True,
+#                              nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -35,8 +35,8 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, nullable=False, default=0)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
-        amenities = relationship("Amenity", secondary=place_amenity,
-                                 viewonly=False)
+        # amenities = relationship("Amenity", secondary=place_amenity,
+        #                          viewonly=False)
         reviews = relationship("Review", backref='place',
                                cascade="all, delete")
     else:
@@ -62,18 +62,18 @@ class Place(BaseModel, Base):
                     reviews_list.append(review)
             return reviews_list
 
-        @property
-        def amenities(self):
-            from models import storage
-            from models.amenity import Amenity
-            amenities_list = []
-            for value in storage.all(Amenity).values():
-                if value.id in self.amenity_ids:
-                    amenities_list.append(value)
-            return amenities_list
+        # @property
+        # def amenities(self):
+        #     from models import storage
+        #     from models.amenity import Amenity
+        #     amenities_list = []
+        #     for value in storage.all(Amenity).values():
+        #         if value.id in self.amenity_ids:
+        #             amenities_list.append(value)
+        #     return amenities_list
 
-        @amenities.setter
-        def amenities(self, obj):
-            from models.amenity import Amenity
-            if type(obj) == Amenity:
-                self.amenity_ids.append(obj.id)
+        # @amenities.setter
+        # def amenities(self, obj):
+        #     from models.amenity import Amenity
+        #     if type(obj) == Amenity:
+        #         self.amenity_ids.append(obj.id)

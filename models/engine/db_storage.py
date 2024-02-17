@@ -7,7 +7,7 @@ from models.state import State
 from models.city import City
 from models.user import User
 from models.place import Place
-from models.amenity import Amenity
+# from models.amenity import Amenity
 from models.review import Review
 
 
@@ -41,7 +41,7 @@ class DBStorage():
             objs.extend(session.query(City).all())
             objs.extend(session.query(User).all())
             objs.extend(session.query(Place).all())
-            objs.extend(session.query(Amenity).all())
+            # objs.extend(session.query(Amenity).all())
             objs.extend(session.query(Review).all())
         else:
             objs = session.query(cls).all()

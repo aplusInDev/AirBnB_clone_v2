@@ -7,11 +7,8 @@ if ! command -v nginx &> /dev/null; then
     sudo apt update
     sudo apt install nginx -y
 fi
-sudo mkdir -p /data/
-sudo mkdir -p /data/web_static/
-sudo mkdir -p /data/web_static/releases/
-sudo mkdir -p /data/web_static/shared/
-sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p "/data/web_static/releases/test/"
+sudo mkdir -p "/data/web_static/shared/"
 sudo touch /data/web_static/releases/test/index.html
 sudo echo "Holberton School" | sudo tee /data/web_static/releases/test/index.html
 sudo rm -rf /data/web_static/current

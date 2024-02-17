@@ -22,12 +22,12 @@ class State(BaseModel, Base):
     else:
         name: str = ""
 
-        @property
-        def cities(self):
-            """Getter attribute in case of file storage"""
-            from models import storage
-            cities_list = []
-            for city in storage.all(City).values():
-                if city.state_id == self.id:
-                    cities_list.append(city)
-            return cities_list
+        # @property
+        # def cities(self):
+        #     """Getter attribute in case of file storage"""
+        #     from models import storage
+        #     cities_list = []
+        #     for city in storage.all(City).values():
+        #         if city.state_id == self.id:
+        #             cities_list.append(city)
+        #     return cities_list
