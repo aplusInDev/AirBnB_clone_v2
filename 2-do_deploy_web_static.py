@@ -1,35 +1,30 @@
 #!/usr/bin/python3
-""" module doc
+"""Fabric script that distributes an archive to your web servers, using the
+function do_deploy.
 """
-from fabric.api import task, local, env, put, run
-import os
-
-env.hosts = ['54.146.86.128',
-             '100.26.152.40']
+from fabric.api import env, put, run
+from os.path import exists
+env.hosts = ['100.25.20.254', '54.144.154.99']
+# env.user = 'ubuntu'
+# env.key_filename = '~/.ssh/holberton'
+# env.warn_only = True
 
 
 def do_deploy(archive_path):
-    """ method doc
-        fab -f 2-do_deploy_web_static.py do_deploy:
-        archive_path=versions/web_static_20231004201306.tgz
-        -i ~/.ssh/id_rsa -u ubuntu
-    """
+    """Function to deploy"""
+    if exists(archive_path) is False:
+        return False
     try:
-        if not os.path.exists(archive_path):
-            return False
-        fn_with_ext = os.path.basename(archive_path)
-        fn_no_ext, ext = os.path.splitext(fn_with_ext)
-        dpath = "/data/web_static/releases/"
         put(archive_path, "/tmp/")
-        run("rm -rf {}{}/".format(dpath, fn_no_ext))
-        run("mkdir -p {}{}/".format(dpath, fn_no_ext))
-        run("tar -xzf /tmp/{} -C {}{}/".format(fn_with_ext, dpath, fn_no_ext))
-        run("rm /tmp/{}".format(fn_with_ext))
-        run("mv {0}{1}/web_static/* {0}{1}/".format(dpath, fn_no_ext))
-        run("rm -rf {}{}/web_static".format(dpath, fn_no_ext))
+        folder_path = "/data/web_static/releases/" + archive_path[9:-4]
+        run("mkdir -p {}".format(folder_path))
+        run("tar -xzf /tmp/{}.tgz -C {}/".format(
+            archive_path[9:-4], folder_path))
+        run("rm /tmp/{}".format(archive_path[9:]))
+        run("mv {}/web_static/* {}/".format(folder_path, folder_path))
+        run("rm -rf {}/web_static".format(folder_path))
         run("rm -rf /data/web_static/current")
-        run("ln -s {}{}/ /data/web_static/current".format(dpath, fn_no_ext))
-        print("New version deployed!")
+        run("ln -s {} /data/web_static/current".format(folder_path))
         return True
-    except Exception:
+    except:
         return False
