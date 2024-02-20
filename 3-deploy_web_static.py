@@ -1,52 +1,66 @@
 #!/usr/bin/python3
-"""Fabric script that distributes an archive to your web servers, using the
-function do_deploy.
+"""pack and deploy content to server
 """
+from fabric.api import local, env, run, put
 from datetime import datetime
-from fabric.api import env, put, run, local
-from os.path import exists
+import os
 env.hosts = ['100.25.20.254', '54.144.154.99']
 
 
 def do_pack():
-    """generates a .tgz archive from the contents of the web_static folder
-    of AirBnB Clone repo, using the function do_pack."""
-
+    """pack all content within web_static
+    into a .tgz archive
+    The archive will be put in versions/
+    """
+    if not os.path.exists("versions"):
+        local("mkdir versions")
     now = datetime.now()
-    file_name = "web_static_" + now.strftime("%Y%m%d%H%M%S") + ".tgz"
-    if not exists("versions"):
-        local("mkdir -p versions")
-
-    local("tar -cvzf versions/{} web_static".format(file_name))
-    if exists("versions/{}".format(file_name)):
-        return "versions/{}".format(file_name)
-    else:
-        return False
+    name = "versions/web_static_{}.tgz".format(
+        now.strftime("%Y%m%d%H%M%S")
+    )
+    cmd = "tar -cvzf {} {}".format(name, "web_static")
+    result = local(cmd)
+    if not result.failed:
+        return name
 
 
 def do_deploy(archive_path):
-    """Function to deploy"""
-    if exists(archive_path) is False:
+    """deploy package to remote server
+    Arguments:
+        archive_path: path to archive to deploy
+    """
+    if not archive_path or not os.path.exists(archive_path):
         return False
+    put(archive_path, '/tmp')
+    ar_name = archive_path[archive_path.find("/") + 1: -4]
     try:
-        put(archive_path, "/tmp/")
-        folder_path = "/data/web_static/releases/" + archive_path[9:-4]
-        run("mkdir -p {}".format(folder_path))
-        run("tar -xzf /tmp/{} -C {}/".format(
-            archive_path[9:], folder_path))
-        run("rm /tmp/{}".format(archive_path[9:]))
-        run("mv {}/web_static/* {}/".format(folder_path, folder_path))
-        run("rm -rf {}/web_static".format(folder_path))
-        run("rm -rf /data/web_static/current")
-        run("ln -s {} /data/web_static/current".format(folder_path))
+        run('mkdir -p /data/web_static/releases/{}/'.format(ar_name))
+        run('tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}/'.format(
+            ar_name, ar_name
+        ))
+        run('rm /tmp/{}.tgz'.format(ar_name))
+        run('mv /data/web_static/releases/{}/web_static/* \
+            /data/web_static/releases/{}/'.format(
+            ar_name, ar_name
+        ))
+        run('rm -rf /data/web_static/releases/{}/web_static'.format(
+            ar_name
+        ))
+        run('rm -rf /data/web_static/current')
+        run('ln -s /data/web_static/releases/{}/ \
+            /data/web_static/current'.format(
+            ar_name
+        ))
+        print("New version deployed!")
         return True
     except Exception:
         return False
 
 
-file = do_pack()
-
-
 def deploy():
-    """Function to deploy"""
-    return do_deploy(file)
+    """pack web_static content and deploy it to web servers
+    """
+    pack = do_pack()
+    if pack:
+        return do_deploy(pack)
+    return False
