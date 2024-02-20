@@ -21,7 +21,7 @@ def do_pack():
     if exists("versions/{}".format(file_name)):
         return "versions/{}".format(file_name)
     else:
-        return None
+        return False
 
 
 def do_deploy(archive_path):
@@ -49,6 +49,4 @@ file = do_pack()
 
 def deploy():
     """Function to deploy"""
-    if file is None:
-        return False
     return do_deploy(file)
