@@ -1,28 +1,20 @@
-#!/usr/bin/env python3
-"""This module defines a class called User
-that inherits from BaseModel and represents a user"""
-
-from models.base_model import BaseModel, Base
+#!/usr/bin/python3
+"""This module contains the User class for the AirBnB clone"""
+from models.base_model import (BaseModel, Base)
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-import os
-
-env_value = os.getenv('HBNB_TYPE_STORAGE')
+from os import getenv
 
 
 class User(BaseModel, Base):
-    """A class that inherits from BaseModel and represents a user"""
-
+    """This class inherits from BaseModel"""
     __tablename__ = "users"
-    if env_value == 'db':
-        email = Column(String(128), nullable=False)
-        password = Column(String(128), nullable=False)
-        first_name = Column(String(128), nullable=True)
-        last_name = Column(String(128), nullable=True)
-        places = relationship("Place", backref='user', cascade="all, delete")
-        reviews = relationship("Review", backref='user', cascade="all, delete")
-    else:
-        email: str = ""
-        password: str = ""
-        first_name: str = ""
-        last_name: str = ""
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128), nullable=True)
+    last_name = Column(String(128), nullable=True)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        places = relationship("Place", back_populates="user",
+                              cascade="all, delete")
+        reviews = relationship(
+            "Review", back_populates="user", cascade="all, delete")

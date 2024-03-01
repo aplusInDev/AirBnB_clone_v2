@@ -1,22 +1,21 @@
 #!/usr/bin/python3
-"""Review of the HBNB Project Module: """
-from models.base_model import BaseModel, Base
+"""This module contains the Review class for the AirBnB clone"""
+from models.base_model import (BaseModel, Base)
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-import os
-
-env_value = os.environ.get("HBNB_TYPE_STORAGE")
+from os import getenv
 
 
 class Review(BaseModel, Base):
-    """ Review class """
-
+    """This class inherits from BaseModel"""
     __tablename__ = "reviews"
-    if env_value == "db":
-        text = Column(String(1024), nullable=False)
-        place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
-        user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
-    else:
-        text: str = ""
-        place_id: str = ""
-        user_id: str = ""
+    text = Column(String(1024), nullable=False)
+    place_id = Column(String(60),
+                      ForeignKey('places.id', ondelete='cascade',
+                                 onupdate='cascade'), nullable=False)
+    user_id = Column(String(60),
+                     ForeignKey('users.id', ondelete='cascade',
+                                onupdate='cascade'), nullable=False)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        user = relationship("User", back_populates="reviews")
+        place = relationship("Place", back_populates="reviews")

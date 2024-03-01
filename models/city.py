@@ -1,24 +1,21 @@
 #!/usr/bin/python3
-"""This module defines a class called City
-that inherits from BaseModel and represents a city"""
-
-from models.base_model import BaseModel, Base
+"""This module contains the City class for the AirBnB clone"""
+from models.base_model import (BaseModel, Base)
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-import os
-
-
-env_value = os.environ.get("HBNB_TYPE_STORAGE")
+from os import getenv
 
 
 class City(BaseModel, Base):
-    """A class that inherits from BaseModel and represents a city"""
-
+    """This class inherits from BaseModel"""
     __tablename__ = "cities"
-    if env_value == "db":
-        name = Column(String(128), nullable=False)
-        state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
-        places = relationship("Place", backref='cities', cascade="all, delete")
-    else:
-        name: str = ""
-        state_id: str = ""
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60),
+                      ForeignKey("states.id", ondelete="cascade",
+                                 onupdate="cascade"),
+                      nullable=False)
+
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        state = relationship("State", back_populates="cities")
+        places = relationship(
+            "Place", back_populates="cities", cascade="all, delete", lazy="dynamic")

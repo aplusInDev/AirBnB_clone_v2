@@ -1,23 +1,15 @@
 #!/usr/bin/python3
-"""This module defines a class called Amenity
-that handle all Amenity instances"""
-
-from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey
+"""This module contains the Amenity class for the AirBnB clone"""
+from models.base_model import (BaseModel, Base)
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.place import Place
-import os
+from os import getenv
 
 
-env_value = os.environ.get("HBNB_TYPE_STORAGE")
-
-
-class Amenity(BaseModel):
-    """A class that inherits from BaseModel and represents an amenity"""
-
+class Amenity(BaseModel, Base):
+    """This class inherits from BaseModel"""
     __tablename__ = "amenities"
-    if env_value == "db":
-        name = Column(String(128), nullable=False)
-        # place_amenities = relationship("Place", secondary=place_amenity)
-    else:
-        name: str = ""
+    name = Column(String(128), nullable=False)
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        place_amenities = relationship(
+            "Place", secondary="place_amenity", back_populates="amenities")
